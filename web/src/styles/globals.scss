@@ -1,0 +1,31 @@
+@import "~bulma/sass/utilities/_all";
+
+$main-background: darken(#22313F, 5%);
+$background: $main-background;
+$main: $main-background;
+$main-light: lighten($main, 25%);
+$main-lighter: lighten($main, 50%);
+$main-lightest: lighten($main, 75%);
+$main-dark: darken($main, 5%);
+$main-darker: darken($main, 10%);
+
+$primary: #dd4e0c;
+
+$footer-background-color: $main-darker;
+$navbar-background-color: $main-dark;
+
+$navbar-item-color: $white;
+$navbar-item-hover-background-color: $main-darker;
+
+$link: $primary;
+$text: $grey-light;
+
+
+@import "~bulma";
+// @import "./mdi/materialdesignicons";
+// @import "~mdi/css/materialdesignicons";
+// @import "~buefy/src/scss/buefy";
+
+@import "./_elements";
+@import "./_iconcolors";
+@import "./_overrides";

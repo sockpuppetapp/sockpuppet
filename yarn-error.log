@@ -1,0 +1,32 @@
+Arguments: 
+  /usr/bin/node /usr/share/yarn/bin/yarn.js install vuex-router-sync
+
+PATH: 
+  /home/adam/.virtualenvs/EELTEST/bin:./node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/adam/Scripts:/bin:/home/adam/go/bin
+
+Yarn version: 
+  1.5.1
+
+Node version: 
+  6.11.4
+
+Platform: 
+  linux x64
+
+npm manifest: 
+  No manifest
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: `install` has been replaced with `add` to add new dependencies. Run "yarn add vuex-router-sync" instead.
+      at MessageError.Error (native)
+      at new MessageError (/usr/share/yarn/lib/cli.js:186:110)
+      at Object.<anonymous> (/usr/share/yarn/lib/cli.js:21987:13)
+      at next (native)
+      at step (/usr/share/yarn/lib/cli.js:98:30)
+      at /usr/share/yarn/lib/cli.js:109:13

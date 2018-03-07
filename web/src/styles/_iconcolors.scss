@@ -1,0 +1,6 @@
+@each $name, $pair in $colors {
+    $color: nth($pair, 1);
+    .icon.#{$name} {
+        fill: $color;
+    }
+}
