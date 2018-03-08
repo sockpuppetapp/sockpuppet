@@ -5,6 +5,11 @@ import router from './router'
 import store from './store'
 import { sync } from 'vuex-router-sync'
 
+// import SystemJS from 'systemjs'
+// SystemJS.import('http://localhost:8888/eel.js').then(function (eel) {
+//     console.log(eel)
+// })
+
 sync(store, router)
 Vue.config.productionTip = false
 
