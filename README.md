@@ -1,4 +1,4 @@
-![alt text](https://raw.githubusercontent.com/sockpuppetapp/sockpuppet/master/src/assets/logo-words.png)
+![alt text](https://raw.githubusercontent.com/sockpuppetapp/sockpuppet/master/web/src/assets/logo-words.png)
 
 > A websocket testing environment
 
