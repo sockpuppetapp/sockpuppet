@@ -1,0 +1,22 @@
+$primary: #dd4e0c;
+
+$main-background: darken(#22313F, 5%);
+$background: $main-background;
+$main: $main-background;
+
+$main-light: lighten($main, 25%);
+$main-lighter: lighten($main, 50%);
+$main-lightest: lighten($main, 75%);
+$main-dark: darken($main, 5%);
+$main-darker: darken($main, 10%);
+
+$dark: $main-dark;
+
+@import "~bulma/sass/utilities/_all";
+@import "./_colors";
+
+
+@import "~bulma";
+@import "./_elements";
+@import "./_iconcolors";
+@import "./_overrides";
