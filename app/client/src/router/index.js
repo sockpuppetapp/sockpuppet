@@ -20,6 +20,7 @@ export default new Router({
                     next({ name: 'Landing' })
                 } else {
                     store.commit('SET_ACTIVE', finder)
+                    store.commit('SET_SESSION', finder.sessions[0])
                     next()
                 }
             }

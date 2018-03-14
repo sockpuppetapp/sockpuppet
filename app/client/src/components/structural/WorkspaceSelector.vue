@@ -35,6 +35,10 @@ export default {
     .workspace-selector {
         margin-left: 1rem;
     }
+    .workspace-selector-item {
+        &.active { background: $main; }
+        &:hover a { color: $dark; }
+    }
     .workspace-selector-item.navbar-item {
         align-items: stretch;
         padding: 0;
@@ -43,6 +47,9 @@ export default {
         &:hover {
             background: $main-lightest;
         }
+    }
+    .currentWorkspace {
+        display: flex;
     }
     .workspace-link {
         display: flex;

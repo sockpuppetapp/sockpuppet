@@ -1,0 +1,10 @@
+[run]
+omit =
+    tests/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    noqa
+    __all__
+    import

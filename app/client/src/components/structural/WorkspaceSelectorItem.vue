@@ -1,5 +1,7 @@
 <template>
-    <div class="workspace-selector-item navbar-item">
+    <div
+        class="workspace-selector-item navbar-item"
+        v-bind:class="{ active: isCurrent }">
         <router-link :to="route" class="workspace-link">
             <span class="icon is-medium dark" v-if="status === 0">
                 <circle-outline-icon />
@@ -15,12 +17,18 @@
             </span>
             {{info.name}}
         </router-link>
+        <span
+            class="closer breathe-t-5 icon dark"
+            v-on:click="closeWorkspace(workspace.id)">
+            <close-icon />
+        </span>
     </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import CircleIcon from 'mdi-vue/CircleIcon'
+import CloseIcon from 'mdi-vue/CloseIcon'
 import CircleOutlineIcon from 'mdi-vue/CircleOutlineIcon'
 import AlertCircleOutlineIcon from 'mdi-vue/AlertCircleOutlineIcon'
 
@@ -56,6 +64,15 @@ export default {
         }
     },
     computed: {
+        isCurrent () {
+            // console.log('this.info.id', this.info.id)
+            // console.log('this.workspace.id', this.workspace.id)
+            // console.log('this.currentWorkspace.id', this.currentWorkspace.id)
+            // if (!this.currentWorkspace) {
+            //     return false
+            // }
+            return this.currentWorkspace && this.workspace.id === this.currentWorkspace.id
+        },
         workspace () {
             return this.activeWorkspaceById(this.info.id)
         },
@@ -63,13 +80,28 @@ export default {
             return this.workspace.status || 0
         },
         ...mapGetters([
-            'activeWorkspaceById'
+            'activeWorkspaceById',
+            'currentWorkspace'
         ])
     },
     components: {
         CircleIcon,
         CircleOutlineIcon,
-        AlertCircleOutlineIcon
+        AlertCircleOutlineIcon,
+        CloseIcon
+    },
+    methods: {
+        ...mapActions([
+            'closeWorkspace'
+        ])
     }
 }
 </script>
+
+<style>
+    .closer {
+        display: block;
+        line-height: 1;
+        cursor: pointer;
+    }
+</style>

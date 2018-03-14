@@ -53,3 +53,12 @@ def test_workspace_store_message(workspace):
     assert id == 2
     assert isinstance(msg, DictObj)
     assert msg.data == text
+
+
+def test_workspace_from_slug(tmpdir):
+    slug = "foo-bar-9999"
+    workspace = Workspace.from_slug(slug, tmpdir)
+
+    assert isinstance(workspace, Workspace)
+    assert workspace.slug == slug
+    assert workspace.name == 'Foo Bar'

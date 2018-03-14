@@ -1,27 +1,7 @@
 <template>
     <div class="workspace full">
-        <div class="columns">
-            <div id="sessions" class="column is-one-fifth">
-                <div class="level">
-                    <div class="level-left">
-                        <div class="level-item">
-                            <h2 class="is-size-4">{{currentWorkspace.name}}</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="level">
-                    <div class="level-left">
-                        <div class="level-item">
-                            <h3>Sessions</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="level">
-                    <div class="level-item sidebar-nav">
-                        <a v-on:click="closeWorkspace(id)">Close workspace</a>
-                    </div>
-                </div>
-            </div>
+        <div class="columns is-gapless">
+            <workspace-sidebar workspace="currentWorkspace" />
             <div class="column is-four-fifths full">
                 <vue-splitter :margin="20">
                     <div slot="left-pane" class="pane-wrap">
@@ -44,30 +24,29 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 import VueSplitter from '@rmp135/vue-splitter'
 import LocationInput from '@/components/workspace/LocationInput'
 import MessageInput from '@/components/workspace/MessageInput'
+import WorkspaceSidebar from '@/components/workspace/WorkspaceSidebar'
 
 export default {
-    computed: {
-        id () {
-            return this.$route.params.workspace
-            // return this.$router.params.workspace
-        },
-        currentWorkspace () {
-            return this.$store.getters.currentWorkspace
-        }
-    },
-    methods: {
-        ...mapActions([
-            'closeWorkspace'
-        ])
-    },
     components: {
         VueSplitter,
         LocationInput,
-        MessageInput
+        MessageInput,
+        WorkspaceSidebar
+    },
+    beforeRouteUpdate (to, from, next) {
+        const finder = this.$store.state.Workspaces.available.find(
+            x => x.id === to.params.workspace)
+
+        if (!finder) {
+            next({ name: 'Landing' })
+        } else {
+            this.$store.commit('SET_ACTIVE', finder)
+            this.$store.commit('SET_SESSION', finder.sessions[0])
+            next()
+        }
     }
 }
 </script>

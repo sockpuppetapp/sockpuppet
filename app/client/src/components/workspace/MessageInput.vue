@@ -4,8 +4,15 @@
             <div class="level-item">
                 <div class="field">
                     <div class="control">
-                        <textarea class="textarea" placeholder="Message"></textarea>
-                        <button class="button">Send</button>
+                        <textarea
+                            class="textarea"
+                            placeholder="Message"
+                            v-model="message"></textarea>
+                        <button
+                            class="button"
+                            v-on:click="sendMessage">
+                            Send
+                        </button>
                     </div>
                 </div>
             </div>
@@ -15,6 +22,16 @@
 
 <script>
 export default {
+    data () {
+        return {
+            message: null
+        }
+    },
+    methods: {
+        sendMessage () {
+            this.$store.dispatch('sendMessage', this.message)
+        }
+    }
 }
 </script>
 

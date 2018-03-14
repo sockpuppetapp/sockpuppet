@@ -6,11 +6,6 @@
                 <div class="level-item">
                     <div class="field">
                         <div class="control has-icons-left">
-                            <!-- <b-icon type="is-grey" icon="circle-outline" /> -->
-                            <!-- <span class="icon"
-                                v-bind:class="iconColor">
-                                <i class="mdi mdi-24px"
-                                    v-bind:class="iconClass"></i> -->
                             <span class="icon is-medium dark" v-if="status === 0">
                                 <circle-outline-icon />
                             </span>
@@ -26,7 +21,10 @@
                             <input
                                 class="input"
                                 type="text"
-                                placeholder="ws://localhost/myfeed" />
+                                placeholder="ws://localhost/myfeed"
+                                v-bind:value="currentSession.location"
+                                @input="updateSession"
+                                :disabled="status > 1" />
                         </div>
                     </div>
                 </div>
@@ -80,18 +78,29 @@ export default {
         statusClass () {
             return statuses[this.status].class
         },
+        currentSession () {
+            return this.$store.state.Workspaces.currentSession
+        },
         ...mapGetters([
             'currentWorkspace'
         ])
     },
     methods: {
         connect () {
-            let status = this.status + 1
-            if (status > 3) { status = 0 }
+            this.$store.commit('NEW_SOCKET')
+
+            // TODO:
+            // - Check status and assign appropriately
+            let status = 3
+            // let status = this.status + 1
+            // if (status > 3) { status = 0 }
             this.$store.commit('SET_STATUS', {
                 workspace: this.currentWorkspace,
                 status: status
             })
+        },
+        updateSession (e) {
+            this.$store.commit('UPDATE_SESSION_URL', e.target.value)
         }
     },
     components: {

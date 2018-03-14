@@ -3,11 +3,11 @@
         <section class="hero">
             <div class="hero-body">
                 <div class="container">
-                    <h1 class="title">
+                    <h1 class="title has-text-centered">
                         Welcome to
                         <strong>SockPuppet</strong>
                     </h1>
-                    <h2 class="subtitle">
+                    <h2 class="subtitle has-text-centered">
                         Your websocket testing environment
                     </h2>
                 </div>
@@ -18,17 +18,26 @@
                 <img src="~@/assets/logo-puppet-open-circle.png" alt="">
             </div>
             <div class="column">
-                <h3>Open Available Workspace</h3>
-                <workspace-available-item
-                    v-for="workspace in workspaces"
-                    :key="workspace.id"
-                    :info="workspace" />
+                <h3 class="is-size-4 has-text-weight-semibold">Available Workspaces</h3>
+                <div class="available-workspaces" v-if="workspaces.length">
+                    <workspace-available-item
+                        v-for="workspace in workspaces"
+                        :key="workspace.id"
+                        :info="workspace" />
+                </div>
+                <div v-else>
+                    <p>Looks like you don't have any workspaces.</p>
+                    <button class="button is-primary" v-on:click="newWorkspace">
+                        Add new workspace
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import WorkspaceAvailableItem from '@/components/structural/WorkspaceAvailableItem'
 
 export default {
@@ -36,7 +45,10 @@ export default {
     methods: {
         open (link) {
             this.$electron.shell.openExternal(link)
-        }
+        },
+        ...mapActions([
+            'newWorkspace'
+        ])
     },
     computed: {
         workspaces () {

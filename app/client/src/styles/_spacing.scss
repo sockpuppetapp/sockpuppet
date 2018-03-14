@@ -1,0 +1,52 @@
+$breathe-sizes: 0px, 5px, 10px, 20px, 40px, 80px, 120px;
+$directions-list: (
+    (top, right, bottom, left),
+    (left, right),
+    (top, bottom),
+    (top),
+    (right),
+    (bottom),
+    (left),
+);
+
+@function str-replace($string, $search, $replace: '') {
+  $string: quote($string + '');
+  $index: str-index($string, $search);
+
+  @if $index {
+    @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+  }
+
+  @return $string;
+}
+
+@each $size in $breathe-sizes {
+  $label: str-replace($size, "px", "");
+  .breathe-#{$label} {
+    margin: $size;
+  }
+  .pad-#{$label} {
+    padding: $size;
+  }
+}
+@each $directions in $directions-list {
+  $result: "";
+
+  @each $direction in $directions {
+    $letter: str-slice($direction, 0, 1);
+    $result: $result + $letter;
+  }
+  @each $size in $breathe-sizes {
+    $label: str-replace($size, "px", "");
+    .breathe-#{$result}-#{$label} {
+      @each $direction in $directions {
+        margin-#{$direction}: $size;
+      }
+    }
+    .pad-#{$result}-#{$label} {
+      @each $direction in $directions {
+        padding-#{$direction}: $size;
+      }
+    }
+  }
+}
