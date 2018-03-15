@@ -3,7 +3,7 @@
         <li
             v-for="session in sessions"
             v-on:click="setSession(session)"
-            v-bind:class="sessionClass(session.id)"
+            v-bind:class="{active: currentSession.id === session.id}"
             :key="session.id"
             class="pad-10">
             {{session.name}}
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
     computed: {
         sessionClass () {
@@ -26,12 +26,12 @@ export default {
         currentWorkspace () {
             return this.$store.getters.currentWorkspace
         },
-        currentSession () {
-            return this.$store.state.Workspaces.currentSession
-        },
         sessions () {
             return this.currentWorkspace.sessions
-        }
+        },
+        ...mapGetters([
+            'currentSession'
+        ])
     },
     methods: {
         ...mapActions([

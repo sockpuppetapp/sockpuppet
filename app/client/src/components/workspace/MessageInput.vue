@@ -21,15 +21,25 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     data () {
         return {
             message: null
         }
     },
+    computed: {
+        ...mapGetters([
+            'currentSession'
+        ])
+    },
     methods: {
         sendMessage () {
-            this.$store.dispatch('sendMessage', this.message)
+            this.$store.dispatch('sendMessage', {
+                session: this.currentSession,
+                message: this.message
+            })
         }
     }
 }

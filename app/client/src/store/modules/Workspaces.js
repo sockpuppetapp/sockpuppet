@@ -2,12 +2,21 @@ import Vue from 'vue'
 import generate from 'project-name-generator'
 import eel from '../eel'
 import router from '../../router'
-import {onmessage, onclose} from '../../socket'
+import {onclose} from '../../socket'
+
+const INCOMING = 1
+const OUTGOING = 0
+
+const uuidv4 = () => {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>  // eslint-disable-line
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)  // eslint-disable-line
+    )
+}
 
 const state = {
     available: [],
-    currentSession: null,
-    socket: null
+    currentSessions: {},
+    sessionLogs: {}
 }
 
 const mutations = {
@@ -21,12 +30,12 @@ const mutations = {
 
         state.available.push(workspace)
         // TEMP
-        // router.push({
-        //     name: 'Workspace',
-        //     params: {
-        //         workspace: workspace.id
-        //     }
-        // })
+        router.push({
+            name: 'Workspace',
+            params: {
+                workspace: workspace.id
+            }
+        })
     },
     SET_ACTIVE (state, workspace) {
         workspace.is_active = true
@@ -57,22 +66,39 @@ const mutations = {
         eel.new_session(workspaceId)
         this.dispatch('fetchWorkspaces')
     },
-    CLEAR_SESSION (state) {
-        state.currentSession = null
-    },
-    UPDATE_SESSION_URL (state, url) {
-        state.currentSession.location = url
-        eel.update_session(state.currentSession.slug, state.currentSession.id, 'location', url)
+    UPDATE_SESSION_URL (state, {session, location}) {
+        Vue.set(state.currentSessions[session.slug], 'location', location)
+        eel.update_session(session.slug, session.id, 'location', location)
     },
     SET_SESSION (state, session) {
-        state.currentSession = session
+        Vue.set(state.currentSessions, session.slug, session)
+        this.dispatch('fetchMessages', session)
     },
     NEW_SOCKET (state, workspace) {
-        // TODO:
-        // - When opening socket, attach to workspace object
-        // workspace.socket = new WebSocket(session.location)
-        // workspace.socket.onmessage = onmessage
-        // workspace.socket.onclose = onclose
+        const currentSession = state.currentSessions[workspace.id]
+        workspace.socket = new WebSocket(currentSession.location)
+        workspace.socket.onmessage = (event) => {
+            this.dispatch('logMessage', {session: currentSession, event})
+        }
+        workspace.socket.onclose = onclose
+    },
+    LOG_MESSAGE (state, {session, msg, message, direction}) {
+        direction = (direction === INCOMING) ? 'INCOMING' : 'OUTGOING'
+        if (!msg) {
+            msg = {
+                direction,
+                message,
+                id: uuidv4(),
+                created: new Date()
+            }
+
+            eel.log_message(session.slug, session.id, msg)
+        }
+        const sessionId = `${session.slug}.${session.id}`
+        if (!state.sessionLogs[sessionId]) {
+            Vue.set(state.sessionLogs, sessionId, [])
+        }
+        state.sessionLogs[sessionId].push(msg)
     }
 }
 
@@ -103,6 +129,18 @@ const actions = {
             })
         })
     },
+    fetchMessages ({ commit }, session) {
+        const run = eel.get_messages(session.slug, session.id)
+        run(messages => {
+            console.log(messages)
+            messages.map(x => {
+                commit('LOG_MESSAGE', {
+                    session,
+                    msg: x
+                })
+            })
+        })
+    },
     closeWorkspace ({ commit }, workspaceId) {
         commit('REMOVE_ACTIVE', {workspaceId})
     },
@@ -112,9 +150,13 @@ const actions = {
     setSession ({ commit }, session) {
         commit('SET_SESSION', session)
     },
-    sendMessage ({ commit }, {session, msg}) {
-        console.log('sending message', msg)
-        session.socket.send(msg)
+    sendMessage ({ commit, state }, {session, message}) {
+        const workspace = this.getters.currentWorkspace
+        workspace.socket.send(message)
+        commit('LOG_MESSAGE', {session, message, direction: OUTGOING})
+    },
+    logMessage ({ commit }, {event, session}) {
+        commit('LOG_MESSAGE', {session, message: event.data, direction: INCOMING})
     }
 }
 
@@ -123,6 +165,23 @@ const getters = {
         const workspace = state.available.find(
             x => x.id === rootState.route.params.workspace)
         return workspace
+    },
+    currentSession: (state, getters) => {
+        const workspace = getters.currentWorkspace
+        if (workspace) {
+            return state.currentSessions[workspace.id]
+        } else {
+            return null
+        }
+    },
+    currentSessionLog: (state, getters) => {
+        const session = getters.currentSession
+        if (session) {
+            const sessionId = `${session.slug}.${session.id}`
+            return state.sessionLogs[sessionId] || []
+        } else {
+            return []
+        }
     },
     activeWorkspaceById: (state) => (id) => {
         return state.available.find(x => x.id === id)

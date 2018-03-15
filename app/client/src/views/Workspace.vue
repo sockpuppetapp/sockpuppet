@@ -8,14 +8,8 @@
                         <location-input />
                         <message-input />
                     </div>
-                    <div slot="right-pane">
-                        <div class="level">
-                            <div class="level-left">
-                                <div class="level-item">
-                                    <h2 class="is-size-4">Log</h2>
-                                </div>
-                            </div>
-                        </div>
+                    <div slot="right-pane" class="pane-wrap">
+                        <message-log />
                     </div>
                 </vue-splitter>
             </div>
@@ -27,6 +21,7 @@
 import VueSplitter from '@rmp135/vue-splitter'
 import LocationInput from '@/components/workspace/LocationInput'
 import MessageInput from '@/components/workspace/MessageInput'
+import MessageLog from '@/components/workspace/MessageLog'
 import WorkspaceSidebar from '@/components/workspace/WorkspaceSidebar'
 
 export default {
@@ -34,7 +29,8 @@ export default {
         VueSplitter,
         LocationInput,
         MessageInput,
-        WorkspaceSidebar
+        WorkspaceSidebar,
+        MessageLog
     },
     beforeRouteUpdate (to, from, next) {
         const finder = this.$store.state.Workspaces.available.find(

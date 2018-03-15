@@ -78,16 +78,14 @@ export default {
         statusClass () {
             return statuses[this.status].class
         },
-        currentSession () {
-            return this.$store.state.Workspaces.currentSession
-        },
         ...mapGetters([
-            'currentWorkspace'
+            'currentWorkspace',
+            'currentSession'
         ])
     },
     methods: {
         connect () {
-            this.$store.commit('NEW_SOCKET')
+            this.$store.commit('NEW_SOCKET', this.currentWorkspace)
 
             // TODO:
             // - Check status and assign appropriately
@@ -100,7 +98,10 @@ export default {
             })
         },
         updateSession (e) {
-            this.$store.commit('UPDATE_SESSION_URL', e.target.value)
+            this.$store.commit('UPDATE_SESSION_URL', {
+                session: this.currentSession,
+                location: e.target.value
+            })
         }
     },
     components: {

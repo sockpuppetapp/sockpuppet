@@ -12,6 +12,11 @@ $main-darker: darken($main, 10%);
 
 $dark: $main-dark;
 
+$box-radius: 0;
+$box-background-color: $main-dark;
+$box-shadow: none;
+$box-padding: 0.5rem;
+
 @import "~bulma/sass/utilities/_all";
 @import "./_colors";
 

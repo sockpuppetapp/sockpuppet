@@ -57,4 +57,8 @@ export default {
         }
     }
 
+    .footer {
+        display: none;
+    }
+
 </style>a
